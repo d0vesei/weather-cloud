@@ -1,0 +1,50 @@
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { fetchWeatherDetail } from '../api'; // api.js ===> const API_BASE_URL 
+
+
+const WeatherDetails = () => {
+    const { id } = useParams();
+    const [details, setDetails] = useState(null);
+
+    useEffect(() => {
+        const loadDetails = async () => {
+            const data = await fetchWeatherDetail(id);
+            setDetails(data);
+        };
+
+        loadDetails();
+    }, [id]);
+
+    if (!details) {
+        return <div>Loading...</div>;
+    }
+
+    return (
+        <div>
+            <h1>Weather Details for {details.terrestrialDate}</h1>
+            <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '20px' }}>
+                <div>
+                    <h2>Temperature</h2>
+                    <p><strong>Min:</strong> {details.minTemp}°C</p>
+                    <p><strong>Max:</strong> {details.maxTemp}°C</p>
+                </div>
+                <div>
+                    <h2>Wind</h2>
+                    <p><strong>Speed:</strong> {details.windSpeed} km/h</p>
+                </div>
+                <div>
+                    <h2>Pressure</h2>
+                    <p><strong>Value:</strong> {details.pressure} hPa</p>
+                </div>
+            </div>
+            <div>
+                <h2>Atmospheric Conditions</h2>
+                <p>{details.atmoOpacity}</p>
+            </div>
+            <button onClick={() => window.history.back()}>Go Back</button>
+        </div>
+    );
+};
+
+export default WeatherDetails;
